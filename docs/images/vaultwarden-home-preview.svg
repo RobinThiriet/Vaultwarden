@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="760" viewBox="0 0 1280 760" role="img" aria-labelledby="title desc">
+  <title id="title">Apercu indicatif de la page d'accueil Vaultwarden</title>
+  <desc id="desc">Mockup documentaire de l'ecran de connexion du coffre web Vaultwarden.</desc>
+  <rect width="1280" height="760" fill="#f5f7fb"/>
+  <rect width="1280" height="64" fill="#175ddc"/>
+  <text x="46" y="41" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#ffffff">bitwarden</text>
+  <rect x="402" y="126" width="476" height="548" rx="8" fill="#ffffff" stroke="#d8dee9"/>
+  <text x="510" y="206" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#1f2937">Connexion</text>
+  <text x="476" y="253" font-family="Arial, sans-serif" font-size="16" fill="#4b5563">Adresse e-mail</text>
+  <rect x="476" y="269" width="328" height="44" rx="4" fill="#ffffff" stroke="#aeb7c5"/>
+  <text x="476" y="347" font-family="Arial, sans-serif" font-size="16" fill="#4b5563">Mot de passe maitre</text>
+  <rect x="476" y="363" width="328" height="44" rx="4" fill="#ffffff" stroke="#aeb7c5"/>
+  <rect x="476" y="440" width="328" height="46" rx="4" fill="#175ddc"/>
+  <text x="597" y="469" font-family="Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff">Connexion</text>
+  <line x1="476" y1="523" x2="804" y2="523" stroke="#e5e7eb"/>
+  <text x="541" y="564" font-family="Arial, sans-serif" font-size="15" fill="#175ddc">Connexion avec appareil</text>
+  <text x="536" y="604" font-family="Arial, sans-serif" font-size="14" fill="#6b7280">Vaultwarden Web</text>
+  <text x="424" y="704" font-family="Arial, sans-serif" font-size="13" fill="#6b7280">Apercu indicatif: remplace ce fichier par une vraie capture de ton instance apres deploiement.</text>
+</svg>

@@ -16,6 +16,7 @@ jobs:
           printf '$argon2id$v=19$m=19456,t=2,p=1$placeholder$placeholder\n' > "$tmp_secret"
           {
             printf 'DOMAIN=https://vaultwarden.example.com\n'
+            printf 'NGINX_HOST=vaultwarden.example.com\n'
             printf 'ACME_EMAIL=admin@example.com\n'
             printf 'ADMIN_TOKEN_FILE=%s\n' "$tmp_secret"
           } > "$tmp_env"

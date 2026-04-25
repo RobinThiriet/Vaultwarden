@@ -39,9 +39,9 @@ services:
     networks:
       - vaultwarden
 
-  caddy:
-    image: ${CADDY_IMAGE:-caddy:2-alpine}
-    container_name: vaultwarden-caddy
+  nginx:
+    image: ${NGINX_IMAGE:-nginx:1.29-alpine}
+    container_name: vaultwarden-nginx
     restart: unless-stopped
     read_only: true
     cap_drop:
@@ -52,22 +52,32 @@ services:
       - no-new-privileges:true
     tmpfs:
       - /tmp:rw,noexec,nosuid,size=64m
+      - /var/cache/nginx:rw,noexec,nosuid,size=64m
+      - /var/run:rw,noexec,nosuid,size=16m
+      - /etc/nginx/conf.d:rw,noexec,nosuid,size=4m
     depends_on:
       - vaultwarden
     ports:
       - "80:80"
       - "443:443"
-      - "443:443/udp"
     volumes:
-      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-      - ./caddy/data:/data
-      - ./caddy/config:/config
+      - ./nginx/templates:/etc/nginx/templates:ro
+      - ./certbot/certs:/etc/letsencrypt:ro
+      - ./certbot/www:/var/www/certbot:ro
     environment:
-      DOMAIN: ${DOMAIN:?Set DOMAIN in .env}
-      ACME_EMAIL: ${ACME_EMAIL:?Set ACME_EMAIL in .env}
+      NGINX_HOST: ${NGINX_HOST:?Set NGINX_HOST in .env}
+      VAULTWARDEN_UPSTREAM: vaultwarden:8080
     logging: *default-logging
     networks:
       - vaultwarden
+
+  certbot:
+    image: ${CERTBOT_IMAGE:-certbot/certbot:v5.0.0}
+    profiles:
+      - certbot
+    volumes:
+      - ./certbot/certs:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
 
 secrets:
   admin_token:

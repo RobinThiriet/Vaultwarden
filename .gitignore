@@ -6,8 +6,9 @@ data/
 secrets/
 backups/
 
-caddy/config/
-caddy/data/
+certbot/certs/
+certbot/www/
+nginx/cache/
 
 *.log
 *.sqlite3
