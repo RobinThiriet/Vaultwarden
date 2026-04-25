@@ -1,0 +1,78 @@
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
+services:
+  vaultwarden:
+    image: ${VAULTWARDEN_IMAGE:-vaultwarden/server:1.35.7-alpine}
+    container_name: vaultwarden
+    restart: unless-stopped
+    user: "${PUID:-1000}:${PGID:-1000}"
+    read_only: true
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    expose:
+      - "8080"
+    volumes:
+      - ./data:/data
+    secrets:
+      - admin_token
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN in .env}
+      ADMIN_TOKEN_FILE: /run/secrets/admin_token
+      SIGNUPS_ALLOWED: "${SIGNUPS_ALLOWED:-false}"
+      INVITATIONS_ALLOWED: "${INVITATIONS_ALLOWED:-false}"
+      SHOW_PASSWORD_HINT: "${SHOW_PASSWORD_HINT:-false}"
+      ROCKET_ADDRESS: 0.0.0.0
+      ROCKET_PORT: 8080
+      EXTENDED_LOGGING: "true"
+      LOG_LEVEL: "${LOG_LEVEL:-warn}"
+      LOG_FILE: /data/vaultwarden.log
+      TZ: "${TZ:-Europe/Paris}"
+    logging: *default-logging
+    networks:
+      - vaultwarden
+
+  caddy:
+    image: ${CADDY_IMAGE:-caddy:2-alpine}
+    container_name: vaultwarden-caddy
+    restart: unless-stopped
+    read_only: true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=64m
+    depends_on:
+      - vaultwarden
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./caddy/data:/data
+      - ./caddy/config:/config
+    environment:
+      DOMAIN: ${DOMAIN:?Set DOMAIN in .env}
+      ACME_EMAIL: ${ACME_EMAIL:?Set ACME_EMAIL in .env}
+    logging: *default-logging
+    networks:
+      - vaultwarden
+
+secrets:
+  admin_token:
+    file: ${ADMIN_TOKEN_FILE:-./secrets/admin_token}
+
+networks:
+  vaultwarden:
+    name: vaultwarden

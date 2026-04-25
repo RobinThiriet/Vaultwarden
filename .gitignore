@@ -1,0 +1,16 @@
+.env
+*.env
+!.env.example
+
+data/
+secrets/
+backups/
+
+caddy/config/
+caddy/data/
+
+*.log
+*.sqlite3
+*.tar
+*.tar.gz
+*.zip

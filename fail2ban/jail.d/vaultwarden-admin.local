@@ -1,0 +1,8 @@
+[vaultwarden-admin]
+enabled = true
+port = 80,443
+filter = vaultwarden-admin
+logpath = /root/Vaultwarden/data/vaultwarden.log
+maxretry = 3
+bantime = 4h
+findtime = 4h
