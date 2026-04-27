@@ -137,8 +137,10 @@ make poc-down
 2. Remplace le `.env` PoC par une configuration production:
 
 ```bash
-cp .env.example .env
+make prod-env
 ```
+
+Cette commande sauvegarde l'ancien `.env` dans un fichier du type `.env.backup-YYYYMMDDTHHMMSSZ`, puis recree un `.env` de production propre.
 
 3. Edite `.env` et renseigne au minimum:
 

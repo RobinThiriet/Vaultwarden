@@ -5,12 +5,13 @@ POC_COMPOSE := docker compose -f compose.yaml -f compose.poc.yaml
 
 .DEFAULT_GOAL := help
 
-.PHONY: help env poc-env prepare token certs renew up down restart logs ps pull update backup config \
+.PHONY: help env prod-env poc-env prepare token certs renew up down restart logs ps pull update backup config \
 	poc-up poc-down poc-restart poc-logs poc-ps poc-config
 
 help:
 	@printf "\nCommandes disponibles:\n\n"
 	@printf "  make env      Cree .env depuis .env.example si absent\n"
+	@printf "  make prod-env Remplace .env par une base de production et sauvegarde l'ancien\n"
 	@printf "  make poc-env  Cree .env depuis .env.poc.example si absent\n"
 	@printf "  make prepare  Prepare les dossiers et permissions\n"
 	@printf "  make token    Genere et enregistre le token admin Argon2\n"
@@ -38,7 +39,8 @@ help:
 	@printf "  make poc-up\n\n"
 	@printf "Passage en production:\n"
 	@printf "  make down\n"
-	@printf "  remplacer .env par des valeurs reelles de domaine\n"
+	@printf "  make prod-env\n"
+	@printf "  editer .env avec les vraies valeurs du domaine\n"
 	@printf "  make certs\n"
 	@printf "  make up\n\n"
 
@@ -49,6 +51,9 @@ env:
 		cp .env.example .env; \
 		printf '.env cree depuis .env.example. Pense a le personnaliser.\n'; \
 	fi
+
+prod-env:
+	@./scripts/switch-to-prod-env.sh
 
 poc-env:
 	@if [ -f .env ]; then \
