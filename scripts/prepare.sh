@@ -14,4 +14,4 @@ else
   chown -R "$PUID:$PGID" data backups 2>/dev/null || true
 fi
 
-printf 'Dossiers prepares. Renseigne .env puis lance ./scripts/generate-admin-token.sh\n'
+printf 'Dossiers prepares. Edite .env, puis lance make token et make certs avant make up.\n'

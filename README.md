@@ -70,12 +70,27 @@ Cette image est un apercu documentaire. Apres le premier demarrage, remplace-la 
 
 ## Installation
 
+`make env` et `make prepare` ne demarrent pas Vaultwarden.
+Ces deux commandes font seulement ceci:
+
+- `make env` cree le fichier `.env` a partir de `.env.example`
+- `make prepare` cree les dossiers `data/`, `certbot/`, `secrets/` et `backups/`
+
+Pour un premier demarrage, suis bien toutes les etapes ci-dessous.
+
+1. Cree le fichier d'environnement:
+
 ```bash
 make env
+```
+
+2. Prepare l'arborescence locale:
+
+```bash
 make prepare
 ```
 
-Edite `.env` et remplace au minimum:
+3. Edite `.env` et remplace au minimum:
 
 ```dotenv
 DOMAIN=https://vaultwarden.example.com
@@ -83,26 +98,55 @@ NGINX_HOST=vaultwarden.example.com
 ACME_EMAIL=admin@example.com
 ```
 
-Genere le token admin Argon2:
+Exemple reel:
+
+```dotenv
+DOMAIN=https://vaultwarden.mondomaine.fr
+NGINX_HOST=vaultwarden.mondomaine.fr
+ACME_EMAIL=robin@mondomaine.fr
+```
+
+Sans ces valeurs, `make certs`, `make up` ou `docker compose config` echoueront.
+
+4. Genere le token admin Argon2:
 
 ```bash
 make token
 ```
 
-Initialise le certificat Let's Encrypt:
+Cette commande cree `secrets/admin_token`.
+
+5. Initialise le certificat Let's Encrypt:
 
 ```bash
 make certs
 ```
 
-Demarre ou redemarre la pile complete:
+Cette etape suppose que:
+
+- le domaine pointe deja vers ton serveur
+- les ports `80` et `443` sont ouverts
+
+6. Demarre la pile complete:
 
 ```bash
 make up
+```
+
+7. Verifie l'etat et suis les logs si besoin:
+
+```bash
+make ps
 make logs
 ```
 
-L'interface admin sera disponible sur `https://ton-domaine/admin`.
+L'interface sera ensuite disponible sur `https://ton-domaine` et l'admin sur `https://ton-domaine/admin`.
+
+Si tu veux juste verifier la configuration avant de demarrer:
+
+```bash
+make config
+```
 
 ## Renouvellement TLS
 
