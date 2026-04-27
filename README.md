@@ -71,8 +71,8 @@ Cette image est un apercu documentaire. Apres le premier demarrage, remplace-la 
 ## Installation
 
 ```bash
-cp .env.example .env
-./scripts/prepare.sh
+make env
+make prepare
 ```
 
 Edite `.env` et remplace au minimum:
@@ -86,20 +86,20 @@ ACME_EMAIL=admin@example.com
 Genere le token admin Argon2:
 
 ```bash
-./scripts/generate-admin-token.sh
+make token
 ```
 
 Initialise le certificat Let's Encrypt:
 
 ```bash
-./scripts/init-letsencrypt.sh
+make certs
 ```
 
 Demarre ou redemarre la pile complete:
 
 ```bash
-docker compose up -d
-docker compose logs -f
+make up
+make logs
 ```
 
 L'interface admin sera disponible sur `https://ton-domaine/admin`.
@@ -109,13 +109,13 @@ L'interface admin sera disponible sur `https://ton-domaine/admin`.
 Ajoute une tache cron sur l'hote:
 
 ```cron
-0 3 * * * cd /root/Vaultwarden && ./scripts/renew-certs.sh >/var/log/vaultwarden-certbot.log 2>&1
+0 3 * * * cd /root/Vaultwarden && make renew >/var/log/vaultwarden-certbot.log 2>&1
 ```
 
 ## Sauvegarde
 
 ```bash
-./scripts/backup.sh
+make backup
 ```
 
 Les archives sont creees dans `backups/`, ignore par Git. Conserve aussi une copie hors du serveur.
@@ -125,8 +125,13 @@ Les archives sont creees dans `backups/`, ignore par Git. Conserve aussi une cop
 Lis les notes de version Vaultwarden, puis:
 
 ```bash
-docker compose pull
-docker compose up -d
+make update
+```
+
+Tu peux afficher la liste complete des commandes avec:
+
+```bash
+make help
 ```
 
 Dependabot est configure pour proposer les mises a jour des images Docker.
