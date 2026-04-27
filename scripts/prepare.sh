@@ -14,4 +14,4 @@ else
   chown -R "$PUID:$PGID" data backups 2>/dev/null || true
 fi
 
-printf 'Dossiers prepares. Edite .env, puis lance make token et make certs avant make up.\n'
+printf 'Dossiers prepares. Pour un PoC: make token puis make poc-up. Pour la prod: make token, make certs puis make up.\n'

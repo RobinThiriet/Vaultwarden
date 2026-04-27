@@ -52,6 +52,8 @@ Cette image est un apercu documentaire. Apres le premier demarrage, remplace-la 
 
 ## Securite activee
 
+Les points ci-dessous correspondent a la configuration de production avec Nginx et TLS:
+
 - HTTPS via Nginx + Certbot.
 - Vaultwarden n'expose aucun port public.
 - Inscriptions, invitations et indices de mot de passe desactives par defaut.
@@ -64,41 +66,81 @@ Cette image est un apercu documentaire. Apres le premier demarrage, remplace-la 
 
 ## Prerequis
 
-- Docker et Docker Compose.
-- Un nom de domaine pointant vers le serveur.
-- Ports `80/tcp` et `443/tcp` ouverts vers ce serveur.
+- Pour le PoC: Docker et Docker Compose suffisent.
+- Pour la production: un nom de domaine pointant vers le serveur.
+- Pour la production: ports `80/tcp` et `443/tcp` ouverts vers ce serveur.
 
-## Installation
+## PoC local sans domaine
 
-`make env` et `make prepare` ne demarrent pas Vaultwarden.
-Ces deux commandes font seulement ceci:
+Le PoC demarre Vaultwarden directement sur `http://localhost:8080`, sans Nginx et sans Let's Encrypt.
+Il est utile pour valider rapidement l'installation, l'interface et le stockage local.
 
-- `make env` cree le fichier `.env` a partir de `.env.example`
-- `make prepare` cree les dossiers `data/`, `certbot/`, `secrets/` et `backups/`
-
-Pour un premier demarrage, suis bien toutes les etapes ci-dessous.
-
-1. Cree le fichier d'environnement:
+1. Cree un `.env` adapte au PoC:
 
 ```bash
-make env
+make poc-env
 ```
 
-2. Prepare l'arborescence locale:
+2. Prepare les dossiers:
 
 ```bash
 make prepare
 ```
 
-3. Edite `.env` et remplace au minimum:
+3. Genere le token admin:
 
-```dotenv
-DOMAIN=https://vaultwarden.example.com
-NGINX_HOST=vaultwarden.example.com
-ACME_EMAIL=admin@example.com
+```bash
+make token
 ```
 
-Exemple reel:
+4. Demarre le PoC:
+
+```bash
+make poc-up
+```
+
+5. Verifie l'etat et les logs:
+
+```bash
+make poc-ps
+make poc-logs
+```
+
+Acces PoC:
+
+- application: `http://localhost:8080`
+- administration: `http://localhost:8080/admin`
+
+Limites du PoC:
+
+- pas de TLS
+- pas de vrai nom de domaine
+- pas d'exposition Internet recommandee
+- pas de challenge Let's Encrypt
+
+Si tu veux valider la configuration PoC avant le demarrage:
+
+```bash
+make poc-config
+```
+
+## Passage en production avec un vrai domaine
+
+Quand le PoC est valide, tu peux passer en production avec Nginx, HTTPS et un vrai domaine.
+
+1. Arrete le PoC:
+
+```bash
+make poc-down
+```
+
+2. Remplace le `.env` PoC par une configuration production:
+
+```bash
+cp .env.example .env
+```
+
+3. Edite `.env` et renseigne au minimum:
 
 ```dotenv
 DOMAIN=https://vaultwarden.mondomaine.fr
@@ -106,15 +148,10 @@ NGINX_HOST=vaultwarden.mondomaine.fr
 ACME_EMAIL=robin@mondomaine.fr
 ```
 
-Sans ces valeurs, `make certs`, `make up` ou `docker compose config` echoueront.
+4. Verifie les prerequis reseau:
 
-4. Genere le token admin Argon2:
-
-```bash
-make token
-```
-
-Cette commande cree `secrets/admin_token`.
+- le domaine pointe deja vers l'IP publique du serveur
+- les ports `80/tcp` et `443/tcp` sont ouverts
 
 5. Initialise le certificat Let's Encrypt:
 
@@ -122,27 +159,25 @@ Cette commande cree `secrets/admin_token`.
 make certs
 ```
 
-Cette etape suppose que:
-
-- le domaine pointe deja vers ton serveur
-- les ports `80` et `443` sont ouverts
-
-6. Demarre la pile complete:
+6. Demarre la stack de production:
 
 ```bash
 make up
 ```
 
-7. Verifie l'etat et suis les logs si besoin:
+7. Controle le demarrage:
 
 ```bash
 make ps
 make logs
 ```
 
-L'interface sera ensuite disponible sur `https://ton-domaine` et l'admin sur `https://ton-domaine/admin`.
+Acces production:
 
-Si tu veux juste verifier la configuration avant de demarrer:
+- application: `https://vaultwarden.mondomaine.fr`
+- administration: `https://vaultwarden.mondomaine.fr/admin`
+
+Si tu veux verifier la configuration de production avant de lancer les conteneurs:
 
 ```bash
 make config

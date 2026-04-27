@@ -1,0 +1,8 @@
+services:
+  vaultwarden:
+    ports:
+      - "${VAULTWARDEN_HTTP_PORT:-8080}:8080"
+
+  nginx:
+    profiles:
+      - prod-only
