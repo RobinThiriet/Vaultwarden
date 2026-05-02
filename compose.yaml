@@ -72,7 +72,7 @@ services:
       - vaultwarden
 
   certbot:
-    image: ${CERTBOT_IMAGE:-certbot/certbot:v5.0.0}
+    image: ${CERTBOT_IMAGE:-certbot/certbot:v5.5.0}
     profiles:
       - certbot
     volumes:
